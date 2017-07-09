@@ -6,7 +6,8 @@ Implementation Details:
 * For English and special characters, [unicode uax #29](http://unicode.org/reports/tr29/) is used, and the implementation is JDK's java.text package. So given a piece of text, first we use [unicode uax #29](http://unicode.org/reports/tr29/) to tokenize to get English words, special characters and CJK sentences, then we use [MMSEG](http://technology.chtsai.org/mmseg/) to tokenize CJK words based on Sogou Chineses dictionary.
 
 # How to use:
-Cjk-mmseg is hosted on Jcenter:
+Cjk-mmseg is hosted on **Jcenter**:
+
 Gradle:
 ```
 compile 'com.profullstack:cjk-mmseg:0.0.1'
