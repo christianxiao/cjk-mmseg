@@ -11,7 +11,7 @@ public class CjkMmsegTest {
     @org.junit.Test
     public void testNext() throws Exception {
         CjkMmseg seg = new CjkMmseg();
-        String s = "如果纪勤不是一个合格的主席，那肯定是因为有人忘了通知他。我的用户名是aa885,我的邮箱是9999@gmail.com.";
+        String s = "My email address is christian.xiao@outlook.com。我的用户名是christian,我的邮箱是christian.xiao@outlook.com.";
         Reader r = new StringReader(s);
         seg.setReader(r);
         Word w;
