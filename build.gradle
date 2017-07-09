@@ -1,0 +1,122 @@
+plugins {
+    id "com.jfrog.bintray" version "1.7.3"
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+group = 'com.profullstack'
+version = '0.0.1'
+
+ext {
+    description = 'An implementation of CJK MMSEG tokenizer algorithm with Sogou Dictionary.'
+    url = 'https://github.com/profullstack/cjk-mmseg.git'
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'java-library'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+dependencies {
+    testCompile "junit:junit:4.11"
+}
+
+// maven upload scripts
+
+// Create the pom configuration:
+def pomConfig = {
+    description description
+    name project.name
+    url url
+
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "maven"
+        }
+    }
+    developers {
+        developer {
+            id "Christian.xiao"
+            name "Christian.Xiao"
+            email "christian.xiao@outlook.com"
+        }
+    }
+
+    scm {
+        url url
+    }
+
+}
+
+
+if (JavaVersion.current().isJava8Compatible()) {
+    tasks.withType(Javadoc) {
+        // disable the crazy super-strict doclint tool in Java 8
+        //noinspection SpellCheckingInspection
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+// Create the publication with the pom configuration:
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            groupId project.group
+            artifactId project.name
+            version project.version
+            pom.withXml {
+                def root = asNode()
+                //root.appendNode('description', 'An implementation of CJK MMSEG tokenizer algorithm with Sogou Dictionary.')
+                //root.appendNode('name', 'cjkMmseg')
+                //root.appendNode('url', 'https://github.com/profullstack/cjkMmseg.git')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+
+bintray {
+    user = 'christianxiao'
+    key = 'ffa0679e98c8107af0de9f37c9625a610193839d'
+    pkg {
+        repo = 'maven'
+        name = project.name
+        userOrg = 'profullstack'
+        desc = description
+        licenses = ['Apache-2.0']
+        vcsUrl = url
+        version {
+            name = project.version
+            desc = project.version
+            released  = new Date()
+            vcsTag = project.version
+        }
+    }
+    publications = ['MyPublication']
+}
